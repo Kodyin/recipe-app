@@ -1,6 +1,8 @@
 package com.kodyin.recipe.services;
 
 
+import com.kodyin.recipe.converters.RecipeCommandToRecipe;
+import com.kodyin.recipe.converters.RecipeToRecipeCommand;
 import com.kodyin.recipe.domain.Recipe;
 import com.kodyin.recipe.repositories.RecipeRepository;
 import org.junit.Before;
@@ -25,13 +27,17 @@ public class RecipeServiceImpleTest {
 
     @Mock
     RecipeRepository recipeRepository;
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
 
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        recipeService = new RecipeServiceImple(recipeRepository);
+        recipeService = new RecipeServiceImple(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
