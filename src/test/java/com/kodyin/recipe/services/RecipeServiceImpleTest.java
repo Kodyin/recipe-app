@@ -1,5 +1,6 @@
 package com.kodyin.recipe.services;
 
+
 import com.kodyin.recipe.domain.Recipe;
 import com.kodyin.recipe.repositories.RecipeRepository;
 import org.junit.Before;
@@ -8,30 +9,60 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
+/**
+ * Created by jt on 6/17/17.
+ */
 public class RecipeServiceImpleTest {
-    RecipeServiceImple recipeServiceImple;
+
+    RecipeServiceImple recipeService;
+
     @Mock
     RecipeRepository recipeRepository;
+
+
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        recipeServiceImple = new RecipeServiceImple(recipeRepository);
+
+        recipeService = new RecipeServiceImple(recipeRepository);
     }
+
     @Test
-    public void getRecipes() throws Exception{
+    public void getRecipeByIdTest() throws Exception {
         Recipe recipe = new Recipe();
-        HashSet recipeData = new HashSet();
-        recipeData.add(recipe);
-        when(recipeServiceImple.getRecipes()).thenReturn(recipeData);
-        Set<Recipe> recipes = recipeServiceImple.getRecipes();
+        recipe.setId(1L);
+        Optional<Recipe> recipeOptional = Optional.of(recipe);
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        Recipe recipeReturned = recipeService.findById(1L);
+
+        assertNotNull("Null recipe returned", recipeReturned);
+        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, never()).findAll();
+    }
+
+    @Test
+    public void getRecipesTest() throws Exception {
+
+        Recipe recipe = new Recipe();
+        HashSet receipesData = new HashSet();
+        receipesData.add(recipe);
+
+        when(recipeService.getRecipes()).thenReturn(receipesData);
+
+        Set<Recipe> recipes = recipeService.getRecipes();
+
         assertEquals(recipes.size(), 1);
         verify(recipeRepository, times(1)).findAll();
+        verify(recipeRepository, never()).findById(anyLong());
     }
+
 }
